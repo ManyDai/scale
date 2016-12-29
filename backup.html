@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+	<title>Document</title>
+	<style>
+		.main{
+			width: 200px;
+			height: 200px;
+			border: 1px solid #ccc;
+			margin:50px auto;
+			position: relative;
+			overflow: hidden;
+		}
+		img{
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.pinch-zoom-container{
+			height: 200px !important;
+		}
+	</style>
+</head>
+<body>
+	<div id="main" class="main">
+		<img src="img/11.jpg" alt="" id='pic'>
+	</div>
+	<script src='jquery-2.1.4.min.js'></script>
+	// <script type="text/javascript" src="pinchzoom.min.js"></script>
+	<script>
+	function drag(outer,inner){
+		var initX,initY,endX,endY,disX,disY,tempX=0,tempY=0,imgHeight,imgWidth;
+		var oImg=$(inner);
+		oImg.on('load',function(){
+			imgHeight=oImg.height();
+			imgWidth=oImg.width();
+		})
+		var obj = $(outer)[0];
+		obj.addEventListener('touchstart',function(event){
+			if (event.targetTouches.length == 1) {
+			　　　　event.preventDefault();
+			        var touch = event.touches[0];
+			        
+			        initX=touch.pageX+tempX;
+					initY=touch.pageY+tempY;
+		        }
+			 
+		});
+
+		obj.addEventListener('touchmove',function(event){
+
+			if (event.targetTouches.length == 1) {
+			　　　　event.preventDefault();
+			        var touch = event.targetTouches[0];
+
+					endX=touch.pageX;
+					endY=touch.pageY;
+					disX=Math.abs(endX-initX)>=0?endX-initX:initX-endX;
+					disY=Math.abs(endY-initY)>=0?endY-initY:initY-endY;
+					// console.log(disX,disY,imgWidth-$(outer).width());
+					// 拖动边界限制
+					if(disX>0)disX=0;
+					if(-disX>imgWidth-$(outer).width())disX=-(imgWidth-$(outer).width());
+					if(disY>0)disY=0;
+					if(-disY>imgHeight-$(outer).height())disY=-(imgHeight-$(outer).height());
+					// end
+					$(inner).css({'left':disX+'px ','top':disY+'px'});
+					tempX=-disX;
+					tempY=-disY;
+		        }
+			 
+		})
+	};
+	// drag('#main','#pic');
+
+
+
+
+
+                new RTP.PinchZoom($('#pic'), {});
+	</script>
+</body>
+</html>
+

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+	<title>Document</title>
+	<style>
+		.main{
+			width: 200px;
+			height: 200px;
+			border: 1px solid #ccc;
+			margin:50px auto;
+			position: relative;
+			overflow: hidden;
+		}
+		img{
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.pinch-zoom-container{
+			height: 200px !important;
+		}
+
+		.viewerimg {
+            width: 100%;
+            height: auto;
+        }
+	</style>
+</head>
+<body>
+    <img id="imgView" class="viewerimg" draggable="true" src="img/11.jpg" title="{{img.name}}">
+	<script src='jquery-2.1.4.min.js'></script>
+	<script type="text/javascript" src="http://cdn.bootcss.com/touchjs/0.2.14/touch.min.js"></script>
+	<script>
+var target = document.getElementById("imgView");
+    target.style.webkitTransition = 'all ease 0.05s';
+
+    touch.on('#imgView', 'touchstart', function (ev) {
+        ev.preventDefault();
+    });
+
+    var initialScale = -10;
+    var currentScale;
+    var dx, dy;
+    touch.on('#imgView', 'pinchend', function (ev) {
+        if ($("#imgView").hasClass('viewerimg')) {
+            $("#imgView").removeClass("viewerimg");
+        };
+        currentScale = ev.scale - 1;
+        currentScale = initialScale + currentScale;
+        currentScale = currentScale > 2 ? 2 : currentScale;
+        currentScale = currentScale < 1 ? 1 : currentScale;
+        if (currentScale == 1) {
+            $("#imgView").addClass("viewerimg");
+        };
+        this.style.webkitTransform = 'scale(' + currentScale + ')';
+        console.log("当前缩放比例为:" + currentScale + ".");
+        
+    });
+
+    touch.on('#imgView', 'pinchend', function (ev) {
+        initialScale = currentScale;
+       
+    });
+
+    touch.on('#imgView', 'drag', function (ev) {
+        dx = dx || 0;
+        dy = dy || 0;
+        this.style.webkitTransform = 'scale(' + currentScale + ')';
+        console.log("当前x值为:" + dx + ", 当前y值为:" + dy + ".");
+        var offx = dx + ev.x + "px";
+        var offy = dy + ev.y + "px";
+        this.style.webkitTransform = "translate3d(" + offx + "," + offy + ",0)";
+    });
+
+    touch.on('#imgView', 'dragend', function (ev) {
+        dx += ev.x;
+        dy += ev.y;
+    });
+	</script>
+</body>
+</html>
+
